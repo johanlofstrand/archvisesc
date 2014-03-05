@@ -1,0 +1,98 @@
+<% include header %>
+
+<main role="main">
+<div class="container">
+
+<script>
+
+var width = 1270,
+    height = 800;
+
+var diameter = 960;
+
+var tree = d3.layout.tree()
+    .size([360, diameter / 2 - 120])
+    .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+
+var diagonal = d3.svg.diagonal.radial()
+    .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", diameter)
+    .attr("height", diameter - 150)
+    .append("g")
+    .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+  data = <%-JSON.stringify(widgets)%>
+  root = data;
+  
+  var nodes = tree.nodes(root),
+      links = tree.links(nodes);
+
+  var link = svg.selectAll(".link");
+  var node = svg.selectAll(".node")
+  
+  update();
+  
+function update() {
+
+  // Update links.
+  link = link.data(links);
+
+  link.exit().remove();
+
+  link.enter().append("path")
+      .attr("class", "link")
+      .attr("d", diagonal)
+
+  // Update nodes.
+  node = node.data(nodes);
+
+  node.exit().remove();
+
+  var nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+      .on("click", click)
+
+  nodeEnter.append("circle")
+      .attr("r", function(d) { 
+          return 4.5;
+      });
+
+  nodeEnter.append("text")
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+      .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+      .text(function(d) { return d.name; })
+      .on('click', function(d,i){
+          //console.log("cliked on node: d: " + d + "i: " + i);
+          window.location.href = window.location.origin + "/module/" + d.name;
+      });
+
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d3.event) {
+      if (d3.event.defaultPrevented) return; // ignore drag
+  }
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+  update();
+}
+d3.select(self.frameElement).style("height", diameter - 50 + "px");
+
+
+</script>
+
+</main>
+</div>
+
+<% include footer %>
+

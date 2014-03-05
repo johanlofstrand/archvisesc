@@ -1,0 +1,10 @@
+*.orig
+*.pyc
+*.sql
+.DS_Store
+.project
+.sass-cache
+.settings
+node_modules
+bower_components
+.sonar/
