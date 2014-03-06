@@ -57,16 +57,26 @@ var filterData = function(data,cb) {
 	var widgets = {};
 	var sections = {};
 	var values = data;
+	//find all widgets
 	for (d in data) {
 		var widgetname = data[d].widget;
+		//console.log("widgetname" + widgetname);
 		widgets[widgetname] = [];
-		for (d2 in values){
-			if (values[d2].widget == widgetname) {
-				var sectionname = values[d2].configsection;
-				widgets[widgetname].push({"name":sectionname});
+	}
+	var keys = Object.keys(widgets);
+	for (key in keys){
+		var keyd = keys[key];
+		if(widgets[keyd].length == 0) {
+			for (d in data) {
+				var datav = data[d];
+				if (keyd = datav.widget) {
+					var sectionname = datav.configsection;
+					widgets[keyd].push({"name":sectionname});
+				}
 			}
 		}
 	}
+
 	for (w in widgets) {
 		var wjson = {"name":w,"children":widgets[w]}
 		roota.push(wjson);
