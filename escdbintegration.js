@@ -1,10 +1,10 @@
 var mysql  = require('mysql');
 
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  database : 'escenic',
-  password : ''
+var pool = mysql.createPool({
+	  host     : 'localhost',
+	  user     : 'root',
+	  database : 'escenic',
+	  password : ''
 });
 
 var sqlSections = "select sectionID, uniqueName from section where uniqueName like '%config%'";
@@ -21,24 +21,28 @@ var sqlConfigSections = "select distinct t.codeText as widget, s.uniqueName as c
 
 exports.fetchSections = function(cb) {
 	var sections = {};
-	connection.query(sqlSections, function(err,rows,fields){
-	 	if (err) throw err;
-		for (row in rows) {
-			var d = rows[row];
-			sections[d.sectionID] = d.uniqueName;
-		}
-		cb(sections);
+	pool.getConnection(function(err,connection) {
+		if (err) console.log(err);
+		connection.query(sqlSections, function(err,rows,fields){
+		 	if (err) throw err;
+			for (row in rows) {
+				var d = rows[row];
+				sections[d.sectionID] = d.uniqueName;
+			}
+			cb(sections);
+		});
+		setTimeout(connection.release(),5000);
 	});
 };
 
 exports.fetchWidgetConfigs = function (cb) {
-	//connection.connect();	
-	connection.query(sqlConfigSections, function(err, rows, fields) {
-		  if (err) throw err;
-		  cb(rows);
+	pool.getConnection(function(err,connection) {
+		connection.query(sqlConfigSections, function(err, rows, fields) {
+			  if (err) throw err;
+			  cb(rows);
+		});
+		setTimeout(connection.release(),5000);
 	});
-	
-	//connection.end();	
 };
 
 /*TODO: 1) check out connection.end bug.

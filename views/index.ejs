@@ -7,7 +7,7 @@
 
 var m = [20, 120, 20, 120],
     w = 2000 - m[1] - m[3],
-    h = 1200 - m[0] - m[2],
+    h = 1500 - m[0] - m[2],
     i = 0,
     root;
 
@@ -78,7 +78,7 @@ function update(source) {
         return dtext;
       })
       .on('mouseover', function(d){
-        var nodeSelection = d3.select(this).style({opacity:'0.8',fill:"red",'font-size':"12px"});
+        var nodeSelection = d3.select(this).style({opacity:'0.8',fill:"red",'font-size':"14px"});
       })
       .on('mouseout', function(d){
         var nodeSelection = d3.select(this).style({opacity:'1.0',fill:"black",'font-size':"10px"});
