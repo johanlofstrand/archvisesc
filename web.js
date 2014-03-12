@@ -84,7 +84,7 @@ var filterData = function(sections, data,cb) {
 						var pS = sections[pD];
 						//If the configsection and the first section in the path missmatch then we'd like to know what that path leads to
 						//if (pS != datav.configsection) {
-							if (pS) csp = csp + "-" + pS;
+							if (pS) csp = csp + " -> " + pS;
 						//}
 						//else break;						
 					}

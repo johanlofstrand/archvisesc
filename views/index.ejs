@@ -6,7 +6,7 @@
 <script>
 
 var m = [20, 120, 20, 120],
-    w = 1600 - m[1] - m[3],
+    w = 2000 - m[1] - m[3],
     h = 1200 - m[0] - m[2],
     i = 0,
     root;
@@ -79,11 +79,9 @@ function update(source) {
       })
       .on('mouseover', function(d){
         var nodeSelection = d3.select(this).style({opacity:'0.8',fill:"red",'font-size':"12px"});
-        nodeSelection.select("text").style({opacity:'1.0'});
       })
       .on('mouseout', function(d){
         var nodeSelection = d3.select(this).style({opacity:'1.0',fill:"black",'font-size':"10px"});
-        nodeSelection.select("text").style({opacity:'1.0'});
       })
       .style("fill-opacity", 1e-6)
      /* .on('click', function(d,i){
