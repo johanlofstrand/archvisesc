@@ -30,19 +30,24 @@ var escdbintegration = require("./escdbintegration");
 					/*Web access*/
 /*------------------------------------------------------------*/
 app.get('/',function(req,res) {
-	escdbintegration.fetchWidgetConfigs(function(data) {
-		filterData(data,function(cb){
-			var widgetdata = cb;
-			res.render("index.ejs",{widgets:widgetdata});
-		});	
+	escdbintegration.fetchSections(function(sections) {
+		escdbintegration.fetchWidgetConfigs(function(data) {
+			filterData(sections, data,function(cb){
+				var widgetdata = cb;
+				res.render("index.ejs",{widgets:widgetdata});
+			});	
+		});
 	});
 })
+
 app.get('/circle',function(req,res) {
-	escdbintegration.fetchWidgetConfigs(function(data) {
-		filterData(data,function(cb){
-			var widgetdata = cb;
-			res.render("fullcircle.ejs",{widgets:widgetdata});
-		});	
+	escdbintegration.fetchSections(function(sections) {
+		escdbintegration.fetchWidgetConfigs(function(data) {
+			filterData(sections, data,function(cb){
+				var widgetdata = cb;
+				res.render("fullcircle.ejs",{widgets:widgetdata});
+			});	
+		});
 	});
 })
 
@@ -50,12 +55,11 @@ app.get('/circle',function(req,res) {
 				/*Call and use Escenic db*/
 /*------------------------------------------------------------*/
 
-var filterData = function(data,cb) {
+var filterData = function(sections, data,cb) {
 	var root = {"name":"Widgets","children":[]};
 	var roota = [];
 
 	var widgets = {};
-	var sections = {};
 	var values = data;
 	//find all widgets
 	for (d in data) {
@@ -69,9 +73,23 @@ var filterData = function(data,cb) {
 		if(widgets[keyd].length == 0) {
 			for (d in data) {
 				var datav = data[d];
+				//loop over all config sections and get the ones that match the widget
 				if (keyd = datav.widget) {
-					var sectionname = datav.configsection;
-					widgets[keyd].push({"name":sectionname});
+					/*Find the complete path for the config section*/
+					var path = datav.path;
+					var pathS = path.split("-");
+					var csp = "";
+					for (p in pathS) {
+						var pD = pathS[p];
+						var pS = sections[pD];
+						//If the configsection and the first section in the path missmatch then we'd like to know what that path leads to
+						//if (pS != datav.configsection) {
+							if (pS) csp = csp + "-" + pS;
+						//}
+						//else break;						
+					}
+					/**/
+					widgets[keyd].push({"name":datav.configsection, "publication":datav.publication, "path":csp});
 				}
 			}
 		}

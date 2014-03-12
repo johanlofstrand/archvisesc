@@ -6,7 +6,7 @@
 <script>
 
 var m = [20, 120, 20, 120],
-    w = 1280 - m[1] - m[3],
+    w = 1600 - m[1] - m[3],
     h = 1200 - m[0] - m[2],
     i = 0,
     root;
@@ -68,13 +68,27 @@ function update(source) {
 
   nodeEnter.append("svg:text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
-      .attr("dy", ".35em")
+      .attr("dy", ".45em")
       .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-      .text(function(d) { return d.name; })
+      .text(function(d) { 
+        var dtext = "";
+        if (d.publication) dtext += "["+d.publication + "] ";
+        dtext += d.name;
+        if (d.path) dtext += " (" + d.path + ")";
+        return dtext;
+      })
+      .on('mouseover', function(d){
+        var nodeSelection = d3.select(this).style({opacity:'0.8',fill:"red",'font-size':"12px"});
+        nodeSelection.select("text").style({opacity:'1.0'});
+      })
+      .on('mouseout', function(d){
+        var nodeSelection = d3.select(this).style({opacity:'1.0',fill:"black",'font-size':"10px"});
+        nodeSelection.select("text").style({opacity:'1.0'});
+      })
       .style("fill-opacity", 1e-6)
-      .on('click', function(d,i){
+     /* .on('click', function(d,i){
           window.location.href = window.location.origin + "/module/" + d.name;
-      });
+      });*/
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
