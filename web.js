@@ -14,7 +14,7 @@ server.listen(port);
 
 app.locals({
   title: 'Architecture visualization tool (node/express + d3)',
-  bootstrap_url: "http://localhost:5001/"
+  bootstrap_url: "http://nyjenkins:5001/"
 });
 
 var bbfulldata;
