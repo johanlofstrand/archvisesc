@@ -80,13 +80,8 @@ var filterData = function(sections, data,cb) {
 					var pathS = path.split("-");
 					var csp = "";
 					for (p in pathS) {
-						var pD = pathS[p];
-						var pS = sections[pD];
-						//If the configsection and the first section in the path missmatch then we'd like to know what that path leads to
-						//if (pS != datav.configsection) {
-							if (pS) csp = csp + " -> " + pS;
-						//}
-						//else break;						
+						var pS = sections[pathS[p]];
+						if (pS) csp = csp + " -> " + pS;
 					}
 					/**/
 					widgets[keyd].push({"name":datav.configsection, "publication":datav.publication, "path":csp});
@@ -96,7 +91,23 @@ var filterData = function(sections, data,cb) {
 	}
 
 	for (w in widgets) {
-		var wjson = {"name":w,"children":widgets[w]}
+		/*pagination*/
+		var wjson;
+		if (widgets[w].length>120) {
+			var newarr = widgets[w].splice(0,120);
+			wjson = {"name":w}
+			var first = {"name":"1"};
+			first["children"] = newarr;
+			var second = {"name":"2"};
+			second["children"] = widgets[w];
+			wjson = {"name":w};
+			wjson["children"] = [];
+			wjson["children"].push(first);
+			wjson["children"].push(second);
+		}
+		else {
+			wjson = {"name":w,"children":widgets[w]}
+		}
 		roota.push(wjson);
 	}
 	root.children = roota;
