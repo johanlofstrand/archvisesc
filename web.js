@@ -8,6 +8,7 @@ var http = require('http')
 app.use(express.urlencoded());
 app.use(express.json());   
 app.use('/public', express.static(__dirname + '/public'));
+app.use(express.logger());
 
 var server = http.createServer(app);
 server.listen(port);
