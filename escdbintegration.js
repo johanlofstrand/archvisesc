@@ -4,7 +4,7 @@ var pool = mysql.createPool({
 	  host     : 'localhost',
 	  user     : 'root',
 	  database : 'escenic',
-	  password : 'root'
+	  password : ''
 });
 
 var sqlSections = "select sectionID, uniqueName from Section where uniqueName like '%config%'";
@@ -14,7 +14,7 @@ var sqlConfigSections = "select distinct t.codeText as widget, s.uniqueName as c
 	sqlConfigSections += "from Section s, ArticleList l, Articletype t, PoolEntry pe, SectionPool sp, Pool p, Publication pub, SectionPath secp "; 
 	sqlConfigSections += "where s.uniqueName like '%config%' "; 
 	sqlConfigSections += "and s.sectionID = l.sectionID and l.articleType = t.codeID and pe.articleID = l.articleID ";
-	sqlConfigSections += "and sp.sectionID = s.sectionID and sp.poolID = pe.poolID and p.poolID = sp.poolID and s.uniqueName = p.name ";
+	sqlConfigSections += "and sp.sectionID = s.sectionID and sp.poolID = pe.poolID and p.poolID = sp.poolID ";
 	sqlConfigSections += "and pub.referenceID = s.referenceID and s.sectionID = secp.sectionID "
 	//sqlConfigSections += "group by s.uniqueName";
 	sqlConfigSections += "order by widget, publication, configsection";
