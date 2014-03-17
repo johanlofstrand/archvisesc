@@ -8,22 +8,17 @@ var http = require('http')
 app.use(express.urlencoded());
 app.use(express.json());   
 app.use('/public', express.static(__dirname + '/public'));
-app.use(express.logger());
+app.use(express.logger()); //access log
 
 var server = http.createServer(app);
 server.listen(port);
 
-app.locals({
+app.locals({  //to get a link to the bootstrap - service visualization tool (https://bitbucket.org/svtidevelopers/svtutil-archvis)
   title: 'Architecture visualization tool (node/express + d3)',
   bootstrap_url: "http://nyjenkins:5001/"
 });
 
-var bbfulldata;
-var bbdata = bbfulldata;
-var sonarnodes = {};
-
 var escdbintegration = require("./escdbintegration");
-
 
 //console.log('Web server started now..., listening on %d', port);
 
@@ -36,17 +31,6 @@ app.get('/',function(req,res) {
 			filterData(sections, data,function(cb){
 				var widgetdata = cb;
 				res.render("index.ejs",{widgets:widgetdata});
-			});	
-		});
-	});
-})
-
-app.get('/circle',function(req,res) {
-	escdbintegration.fetchSections(function(sections) {
-		escdbintegration.fetchWidgetConfigs(function(data) {
-			filterData(sections, data,function(cb){
-				var widgetdata = cb;
-				res.render("fullcircle.ejs",{widgets:widgetdata});
 			});	
 		});
 	});
@@ -84,7 +68,7 @@ var filterData = function(sections, data,cb) {
 						var pS = sections[pathS[p]];
 						if (pS) csp = csp + " -> " + pS;
 					}
-					/**/
+					/*Every configsection is a new child element for the widget*/
 					widgets[keyd].push({"name":datav.configsection, "publication":datav.publication, "path":csp});
 				}
 			}
@@ -92,7 +76,7 @@ var filterData = function(sections, data,cb) {
 	}
 
 	for (w in widgets) {
-		/*pagination*/
+		/*Pagination - this part is really a ugly hack, but couldn't put in more time to do a nicer solution...*/
 		var wjson;
 		if (widgets[w].length>120) {
 			var newarr = widgets[w].splice(0,120);

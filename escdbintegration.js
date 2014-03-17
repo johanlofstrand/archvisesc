@@ -16,7 +16,6 @@ var sqlConfigSections = "select distinct t.codeText as widget, s.uniqueName as c
 	sqlConfigSections += "and s.sectionID = l.sectionID and l.articleType = t.codeID and pe.articleID = l.articleID ";
 	sqlConfigSections += "and sp.sectionID = s.sectionID and sp.poolID = pe.poolID and p.poolID = sp.poolID ";
 	sqlConfigSections += "and pub.referenceID = s.referenceID and s.sectionID = secp.sectionID "
-	//sqlConfigSections += "group by s.uniqueName";
 	sqlConfigSections += "order by widget, publication, configsection";
 
 exports.fetchSections = function(cb) {
@@ -44,7 +43,3 @@ exports.fetchWidgetConfigs = function (cb) {
 		setTimeout(connection.release(),5000);
 	});
 };
-
-/*TODO: 1) check out connection.end bug.
-		2) deep copy result...
-*/
